@@ -22,6 +22,30 @@ class ArticlesController < ApplicationController
     end
   end
 
+  def edit
+    @article = Article.find(params[:id]) # i think this pulls the param "id" from the actual url path
+                                                # not the db; but then it locates it in the db
+  end
+
+  def update
+    @article = Article.find(params[:id])
+
+    if @article.update(article_params)
+      redirect_to @article
+    else
+      render :edit, status: :unprocessable_entity
+    end
+  end
+
+  def destroy
+    @article = Article.find(params[:id])
+    @article.destroy
+    # gonna need to add something else that allows for deleting comments later, since there will be
+    # a oneToMany relationship. deleting an article with comments will strand lingering comments in db
+
+    redirect_to root_path, status: :see_other
+  end
+
   private
     def article_params
       params.require(:article).permit(:title, :body)
