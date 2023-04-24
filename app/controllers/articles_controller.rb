@@ -1,4 +1,7 @@
 class ArticlesController < ApplicationController
+
+  http_basic_authenticate_with name: "dhh", password: "secret", except:
+    [:index, :show]
   def index # returns the index.html.erb file
     @articles = Article.all #gets all articles from the database
   end
@@ -48,6 +51,6 @@ class ArticlesController < ApplicationController
 
   private
     def article_params
-      params.require(:article).permit(:title, :body)
+      params.require(:article).permit(:title, :body, :status)
     end
 end

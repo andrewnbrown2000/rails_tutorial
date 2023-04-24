@@ -1,4 +1,6 @@
 class CommentsController < ApplicationController
+
+  http_basic_authenticate_with name: "dhh", password: "secret", only: :destroy
   def create
     @article = Article.find(params[:article_id]) # must find article first in db and then find comments
                                                   # on that article
@@ -9,8 +11,15 @@ class CommentsController < ApplicationController
                                                   # wouldn't show right away until u refresh
   end
 
+  def destroy
+    @article = Article.find(params[:article_id])
+    @comment = @article.comments.find(params[:id])
+    @comment.destroy
+    redirect_to article_path(@article), status: :see_other
+  end
+
   private
   def comment_params
-    params.require(:comment).permit(:commenter, :body)
+    params.require(:comment).permit(:commenter, :body, :status)
   end
 end
